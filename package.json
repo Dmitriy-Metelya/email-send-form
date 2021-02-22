@@ -1,0 +1,39 @@
+{
+  "name": "email-send-form",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/index.jsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Dmitriy-Metelya/email-send-form.git"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  },
+  "author": "Dmitriy Metelya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dmitriy-Metelya/email-send-form/issues"
+  },
+  "homepage": "https://github.com/Dmitriy-Metelya/email-send-form#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.17",
+    "@babel/preset-env": "^7.12.17",
+    "@babel/preset-react": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
+}
