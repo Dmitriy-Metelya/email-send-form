@@ -5,5 +5,5 @@ import Form from './Form.jsx';
 
 ReactDOM.render(
   <Form />,
-  document.getElementById('container'),
+  document.body,
 );

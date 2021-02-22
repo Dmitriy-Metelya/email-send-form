@@ -1,0 +1,1 @@
+Open index.html from "dist" directory in your browser to start working with the service.
