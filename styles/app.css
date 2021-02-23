@@ -50,3 +50,9 @@ form {
 .mr-1 {
     margin-right: 0.7em;
 }
+
+.error {
+    color: red;
+    font-size: 0.7em;
+    margin: 5px 0px;
+}
