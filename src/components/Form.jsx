@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { connect } from 'react-redux';
@@ -38,6 +38,12 @@ const Form = ({
   letterBody,
   initialLetter,
 }) => {
+  const firstInput = React.createRef();
+
+  useEffect(() => {
+    firstInput.current.focus();
+  });
+  
   const fromTextChangeHandle = (e) => updateFromText(e.target.value);
   const toTextChangeHandle = (e) => updateToText(e.target.value);
   const subjectTextChangeHandle = (e) => updateSubjectText(e.target.value);
@@ -55,7 +61,7 @@ const Form = ({
           <label htmlFor="from" className="mr-1">
             From:{' '}
           </label>
-          <input type="text" id="from" onChange={fromTextChangeHandle} value={fromText} />
+          <input type="text" id="from" ref={firstInput} onChange={fromTextChangeHandle} value={fromText} />
         </div>
         <EmailValidationMessage email={fromText} />
       </div>

@@ -37,10 +37,12 @@ form {
     border: none;
     color: white;
     background-color: green;
-    border-radius: 3px;
+    border-radius: 5px;
 
     font-size: 1em;
     font-weight: bold;
+
+    cursor: pointer;
 }
 
 .mb-1 {
