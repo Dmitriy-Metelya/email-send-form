@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { connect } from 'react-redux';
 import * as actions from '../actions/index.js';
 import EmailValidationMessage from './EmailValidationMessage.jsx';
 import BodyValidationMessage from './BodyValidationMessage.jsx';
+import * as yup from 'yup';
 
 const mapStateToProps = (state) => {
   const props = {
+    submissionState: state.submissionState,
     fromText: state.fromText,
     toText: state.toText,
     subjectText: state.subjectText,
@@ -19,6 +21,7 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
+  setSubmissionState: actions.setSubmissionState,
   updateFromText: actions.updateFromText,
   updateToText: actions.updateToText,
   updateSubjectText: actions.updateSubjectText,
@@ -26,31 +29,63 @@ const actionCreators = {
   submitLetter: actions.submitLetter,
 };
 
+const validateEmail = (email) => {
+  const schema = yup.string().required().email();
+
+  try {
+    schema.validateSync(email.trim(), { abortEarly: false });
+  } catch (e) {
+    const errMessage = `${e.message[0].toUpperCase()}${e.message.slice(1)}`;
+    return errMessage;
+  }
+
+  return null;
+};
+
+const validateBody = (text) => {
+  const schema = yup.string().required();
+
+  try {
+    schema.validateSync(text.split('<p>').join('').split('</p>').join('').split('<br>').join('').trim(), { abortEarly: false });
+    if (text === '<p><br></p>') {
+      throw new Error('This is a required field');
+    }
+  } catch (e) {
+    const errMessage = `${e.message[0].toUpperCase()}${e.message.slice(1)}`;
+    return errMessage;
+  }
+
+  return null;
+};
+
 const Form = ({
-  updateFromText,
-  updateToText,
-  updateSubjectText,
-  updateBody,
-  submitLetter,
+  submissionState,
   fromText,
   toText,
   subjectText,
   letterBody,
   initialLetter,
+  setSubmissionState,
+  updateFromText,
+  updateToText,
+  updateSubjectText,
+  updateBody,
+  submitLetter,
 }) => {
-  const firstInput = React.createRef();
-
-  useEffect(() => {
-    firstInput.current.focus();
-  });
-  
   const fromTextChangeHandle = (e) => updateFromText(e.target.value);
   const toTextChangeHandle = (e) => updateToText(e.target.value);
   const subjectTextChangeHandle = (e) => updateSubjectText(e.target.value);
   const letterBodyChangeHandle = (body) => updateBody(body);
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitLetter({ from: fromText, to: toText, subject: subjectText, body: letterBody });
+    const formValidationError = validateEmail(fromText);
+    const toValidationError = validateEmail(toText);
+    const bodyValidationError = validateBody(letterBody);
+    if (formValidationError || toValidationError || bodyValidationError) {
+      setSubmissionState('failed');
+    } else {
+      submitLetter({ from: fromText, to: toText, subject: subjectText, body: letterBody });
+    }
   };
 
   return (
@@ -61,9 +96,14 @@ const Form = ({
           <label htmlFor="from" className="mr-1">
             From:{' '}
           </label>
-          <input type="text" id="from" ref={firstInput} onChange={fromTextChangeHandle} value={fromText} />
+          <input
+            type="text"
+            id="from"
+            onChange={fromTextChangeHandle}
+            value={fromText}
+          />
         </div>
-        <EmailValidationMessage email={fromText} />
+        <EmailValidationMessage submissionState={submissionState} error={validateEmail(fromText)} />
       </div>
       <div className="mb-1">
         <div className="input-wrapper">
@@ -72,7 +112,7 @@ const Form = ({
           </label>
           <input type="text" id="to" onChange={toTextChangeHandle} value={toText} />
         </div>
-        <EmailValidationMessage email={toText} />
+        <EmailValidationMessage submissionState={submissionState} error={validateEmail(toText)} />
       </div>
       <div className="mb-1 input-wrapper">
         <label htmlFor="subject" className="mr-1">
@@ -80,12 +120,8 @@ const Form = ({
         </label>
         <input type="text" id="subject" onChange={subjectTextChangeHandle} value={subjectText} />
       </div>
-      <ReactQuill
-        theme="snow"
-        onChange={letterBodyChangeHandle}
-        value={letterBody}
-      />
-      <BodyValidationMessage text={letterBody} />
+      <ReactQuill theme="snow" onChange={letterBodyChangeHandle} value={letterBody} />
+      <BodyValidationMessage submissionState={submissionState} error={validateBody(letterBody)} />
       <div className="mb-1"></div>
       <input type="submit" className="submit-btn" value="Submit" />
     </form>

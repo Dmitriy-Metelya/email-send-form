@@ -1,5 +1,18 @@
 import { combineReducers } from 'redux';
 
+const submissionState = (state = 'filling', action) => {
+  switch (action.type) {
+    case 'SUBMISSION_STATE_SET': {
+      return action.payload.submissionState;
+    }
+    case 'LETTER_SUBMIT': {
+      return 'filling';
+    }
+    default:
+      return state;
+  }
+};
+
 const fromText = (state = '', action) => {
   switch (action.type) {
     case 'FROM_TEXT_UPDATE': {
@@ -63,6 +76,7 @@ const initialLetter = (state = {}, action) => {
 };
 
 export default combineReducers({
+  submissionState,
   fromText,
   toText,
   subjectText,

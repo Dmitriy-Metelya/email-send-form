@@ -1,3 +1,10 @@
+export const setSubmissionState = (submissionState) => ({
+  type: 'SUBMISSION_STATE_SET',
+  payload: {
+    submissionState,
+  },
+});
+
 export const updateFromText = (text) => ({
   type: 'FROM_TEXT_UPDATE',
   payload: {
