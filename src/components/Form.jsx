@@ -5,15 +5,15 @@ import { connect } from 'react-redux';
 import * as actions from '../actions/index.js';
 import EmailValidationMessage from './EmailValidationMessage.jsx';
 import BodyValidationMessage from './BodyValidationMessage.jsx';
+import TrackingEmailBody from './TrackingEmailBody.jsx';
+import EmailInput from './EmailInput.jsx';
+import SubjectInput from './SubjectInput.jsx';
 import * as yup from 'yup';
 
 const mapStateToProps = (state) => {
   const props = {
     submissionState: state.submissionState,
-    fromText: state.fromText,
-    toText: state.toText,
-    subjectText: state.subjectText,
-    emailBody: state.emailBody,
+    uiState: state.uiState,
     initialEmail: state.initialEmail,
     convertedEmail: state.convertedEmail,
   };
@@ -61,11 +61,7 @@ const validateBody = (text) => {
 
 const Form = ({
   submissionState,
-  fromText,
-  toText,
-  subjectText,
-  emailBody,
-  initialEmail,
+  uiState,
   convertedEmail,
   setSubmissionState,
   updateFromText,
@@ -74,6 +70,7 @@ const Form = ({
   updateBody,
   makeTrackingEmail,
 }) => {
+  const { fromText, toText, subjectText, emailBody } = uiState;
   const fromTextChangeHandle = (e) => updateFromText(e.target.value);
   const toTextChangeHandle = (e) => updateToText(e.target.value);
   const subjectTextChangeHandle = (e) => updateSubjectText(e.target.value);
@@ -93,40 +90,15 @@ const Form = ({
   return (
     <form onSubmit={handleSubmit}>
       <h1>Send your email</h1>
-      <div className="mb-1">
-        <div className="input-wrapper">
-          <label htmlFor="from" className="mr-1">
-            From:{' '}
-          </label>
-          <input
-            type="text"
-            id="from"
-            onChange={fromTextChangeHandle}
-            value={fromText}
-          />
-        </div>
-        <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(fromText)} />
-      </div>
-      <div className="mb-1">
-        <div className="input-wrapper">
-          <label htmlFor="to" className="mr-1">
-            To:{' '}
-          </label>
-          <input type="text" id="to" onChange={toTextChangeHandle} value={toText} />
-        </div>
-        <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(toText)} />
-      </div>
-      <div className="mb-1 input-wrapper">
-        <label htmlFor="subject" className="mr-1">
-          Subject:{' '}
-        </label>
-        <input type="text" id="subject" onChange={subjectTextChangeHandle} value={subjectText} />
-      </div>
-      <ReactQuill theme="snow" onChange={bodyChangeHandle} value={emailBody} />
+      <EmailInput onChange={fromTextChangeHandle} value={fromText} inputId="from" disabled={submissionState === 'TRACKING_EMAIL_REQUEST'} />
+      <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(fromText)} className="mb-1" />
+      <EmailInput onChange={toTextChangeHandle} value={toText} inputId="to" disabled={submissionState === 'TRACKING_EMAIL_REQUEST'} />
+      <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(toText)} className="mb-1" />
+      <SubjectInput onChange={subjectTextChangeHandle} value={subjectText} disabled={submissionState === 'TRACKING_EMAIL_REQUEST'} />
+      <ReactQuill theme="snow" onChange={bodyChangeHandle} value={emailBody} readOnly={submissionState === 'TRACKING_EMAIL_REQUEST'} />
       <BodyValidationMessage submissionState={submissionState} validationError={validateBody(emailBody)} />
-      <div className="mb-1"></div>
-      <input type="submit" className="submit-btn" value="Submit" />
-      <p>{convertedEmail.body}</p>
+      <input type="submit" className="submit-btn" value="Submit" disabled={submissionState === 'TRACKING_EMAIL_REQUEST'} />
+      <TrackingEmailBody hidden={submissionState !== 'TRACKING_EMAIL_SUCCESS'} rawHtml={convertedEmail.body || null} />
     </form>
   );
 };

@@ -81,13 +81,16 @@ const convertedEmail = (state = {}, action) => {
       return state;
   }
 };
-
-export default combineReducers({
-  submissionState,
+const uiState = combineReducers({
   fromText,
   toText,
   subjectText,
   emailBody,
+});
+
+export default combineReducers({
+  submissionState,
+  uiState,
   initialEmail,
   convertedEmail,
 });
