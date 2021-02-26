@@ -13,8 +13,9 @@ const mapStateToProps = (state) => {
     fromText: state.fromText,
     toText: state.toText,
     subjectText: state.subjectText,
-    letterBody: state.letterBody,
-    initialLetter: state.initialLetter,
+    emailBody: state.emailBody,
+    initialEmail: state.initialEmail,
+    convertedEmail: state.convertedEmail,
   };
 
   return props;
@@ -26,7 +27,7 @@ const actionCreators = {
   updateToText: actions.updateToText,
   updateSubjectText: actions.updateSubjectText,
   updateBody: actions.updateBody,
-  submitLetter: actions.submitLetter,
+  makeTrackingEmail: actions.makeTrackingEmail,
 };
 
 const validateEmail = (email) => {
@@ -63,28 +64,29 @@ const Form = ({
   fromText,
   toText,
   subjectText,
-  letterBody,
-  initialLetter,
+  emailBody,
+  initialEmail,
+  convertedEmail,
   setSubmissionState,
   updateFromText,
   updateToText,
   updateSubjectText,
   updateBody,
-  submitLetter,
+  makeTrackingEmail,
 }) => {
   const fromTextChangeHandle = (e) => updateFromText(e.target.value);
   const toTextChangeHandle = (e) => updateToText(e.target.value);
   const subjectTextChangeHandle = (e) => updateSubjectText(e.target.value);
-  const letterBodyChangeHandle = (body) => updateBody(body);
+  const bodyChangeHandle = (body) => updateBody(body);
   const handleSubmit = (e) => {
     e.preventDefault();
     const formValidationError = validateEmail(fromText);
     const toValidationError = validateEmail(toText);
-    const bodyValidationError = validateBody(letterBody);
+    const bodyValidationError = validateBody(emailBody);
     if (formValidationError || toValidationError || bodyValidationError) {
-      setSubmissionState('failed');
+      setSubmissionState('TRACKING_EMAIL_FAILURE');
     } else {
-      submitLetter({ from: fromText, to: toText, subject: subjectText, body: letterBody });
+      makeTrackingEmail({ from: fromText, to: toText, subject: subjectText, body: emailBody });
     }
   };
 
@@ -103,7 +105,7 @@ const Form = ({
             value={fromText}
           />
         </div>
-        <EmailValidationMessage submissionState={submissionState} error={validateEmail(fromText)} />
+        <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(fromText)} />
       </div>
       <div className="mb-1">
         <div className="input-wrapper">
@@ -112,7 +114,7 @@ const Form = ({
           </label>
           <input type="text" id="to" onChange={toTextChangeHandle} value={toText} />
         </div>
-        <EmailValidationMessage submissionState={submissionState} error={validateEmail(toText)} />
+        <EmailValidationMessage submissionState={submissionState} validationError={validateEmail(toText)} />
       </div>
       <div className="mb-1 input-wrapper">
         <label htmlFor="subject" className="mr-1">
@@ -120,10 +122,11 @@ const Form = ({
         </label>
         <input type="text" id="subject" onChange={subjectTextChangeHandle} value={subjectText} />
       </div>
-      <ReactQuill theme="snow" onChange={letterBodyChangeHandle} value={letterBody} />
-      <BodyValidationMessage submissionState={submissionState} error={validateBody(letterBody)} />
+      <ReactQuill theme="snow" onChange={bodyChangeHandle} value={emailBody} />
+      <BodyValidationMessage submissionState={submissionState} validationError={validateBody(emailBody)} />
       <div className="mb-1"></div>
       <input type="submit" className="submit-btn" value="Submit" />
+      <p>{convertedEmail.body}</p>
     </form>
   );
 };

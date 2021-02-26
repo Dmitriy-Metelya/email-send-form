@@ -1,12 +1,9 @@
 import { combineReducers } from 'redux';
 
-const submissionState = (state = 'filling', action) => {
+const submissionState = (state = 'TRACKING_EMAIL_FILLING', action) => {
   switch (action.type) {
     case 'SUBMISSION_STATE_SET': {
       return action.payload.submissionState;
-    }
-    case 'LETTER_SUBMIT': {
-      return 'filling';
     }
     default:
       return state;
@@ -18,7 +15,7 @@ const fromText = (state = '', action) => {
     case 'FROM_TEXT_UPDATE': {
       return action.payload.text;
     }
-    case 'LETTER_SUBMIT': {
+    case 'EMAIL_SUBMIT': {
       return '';
     }
     default:
@@ -31,7 +28,7 @@ const toText = (state = '', action) => {
     case 'TO_TEXT_UPDATE': {
       return action.payload.text;
     }
-    case 'LETTER_SUBMIT': {
+    case 'EMAIL_SUBMIT': {
       return '';
     }
     default:
@@ -44,7 +41,7 @@ const subjectText = (state = '', action) => {
     case 'SUBJECT_TEXT_UPDATE': {
       return action.payload.text;
     }
-    case 'LETTER_SUBMIT': {
+    case 'EMAIL_SUBMIT': {
       return '';
     }
     default:
@@ -52,12 +49,12 @@ const subjectText = (state = '', action) => {
   }
 };
 
-const letterBody = (state = '', action) => {
+const emailBody = (state = '', action) => {
   switch (action.type) {
     case 'BODY_UPDATE': {
-      return action.payload.letterHtml;
+      return action.payload.emailHtml;
     }
-    case 'LETTER_SUBMIT': {
+    case 'EMAIL_SUBMIT': {
       return '';
     }
     default:
@@ -65,10 +62,20 @@ const letterBody = (state = '', action) => {
   }
 };
 
-const initialLetter = (state = {}, action) => {
+const initialEmail = (state = {}, action) => {
   switch (action.type) {
-    case 'LETTER_SUBMIT': {
-      return action.payload.letter;
+    case 'EMAIL_SUBMIT': {
+      return action.payload.email;
+    }
+    default:
+      return state;
+  }
+};
+
+const convertedEmail = (state = {}, action) => {
+  switch (action.type) {
+    case 'TRACKING_ EMAIL_CREATE': {
+      return action.payload.email;
     }
     default:
       return state;
@@ -80,6 +87,7 @@ export default combineReducers({
   fromText,
   toText,
   subjectText,
-  letterBody,
-  initialLetter,
+  emailBody,
+  initialEmail,
+  convertedEmail,
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 
-const BodyValidationMessage = ({ submissionState, error }) => {
-  return submissionState === 'failed' && error ? <p className="error">{error}</p> : null;
+const BodyValidationMessage = ({ submissionState, validationError }) => {
+  return submissionState === 'TRACKING_EMAIL_FAILURE' && validationError ? <p className="error">{validationError}</p> : null;
 };
 
 export default BodyValidationMessage;
