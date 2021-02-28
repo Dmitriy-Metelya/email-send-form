@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
-import Form from './components/Form.jsx';
+import EmailTrackingApp from './components/EmailTrackingApp.jsx';
 import reducers from './reducers/index.js';
 import thunk from 'redux-thunk';
 
@@ -18,7 +18,7 @@ const store = createStore(
 
 render(
   <Provider store={store}>
-    <Form />
+    <EmailTrackingApp />
   </Provider>,
   document.getElementById('container'),
 );

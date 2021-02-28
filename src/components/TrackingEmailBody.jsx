@@ -5,16 +5,16 @@ const TrackingEmailBody = ({ rawHtml }) => {
   const html = useRef();
   useEffect(() => {
     if (html.current) {
-      Prism.highlightElement(html.current)
+      Prism.highlightElement(html.current);
     }
   });
 
   return rawHtml && (
     <pre>
-    <code ref={html} className={`language-markup`}>
-      {rawHtml}
-    </code>
-  </pre>
+      <code ref={html} className="language-markup">
+        {rawHtml}
+      </code>
+    </pre>
   );
 };
 

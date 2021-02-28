@@ -20,12 +20,22 @@
     ],
     "plugins": [
       "@babel/plugin-transform-runtime",
-      ["prismjs", {
-        "languages": ["javascript", "css", "html"],
-        "plugins": ["line-numbers", "show-language"],
-        "theme": "okaidia",
-        "css": true
-      }]
+      [
+        "prismjs",
+        {
+          "languages": [
+            "javascript",
+            "css",
+            "html"
+          ],
+          "plugins": [
+            "line-numbers",
+            "show-language"
+          ],
+          "theme": "okaidia",
+          "css": true
+        }
+      ]
     ]
   },
   "author": "Dmitriy Metelya",
@@ -42,6 +52,12 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-prismjs": "^2.0.1",
     "css-loader": "^5.0.2",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "style-loader": "^2.0.0",
     "webpack": "^5.23.0",
     "webpack-cli": "^4.5.0",
@@ -50,6 +66,7 @@
   "dependencies": {
     "@babel/runtime": "^7.13.7",
     "axios": "^0.21.1",
+    "classnames": "^2.2.6",
     "prismjs": "^1.23.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

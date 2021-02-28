@@ -1,4 +1,5 @@
-import axios from 'axios';
+// eslint-disable-next-line import/extensions
+import getTrackingData from './getTrackingData.js';
 
 export const setSubmissionState = (submissionState) => ({
   type: 'SUBMISSION_STATE_SET',
@@ -53,61 +54,24 @@ export const makeTrackingEmail = (initEmail) => async (dispatch) => {
   dispatch(setSubmissionState('TRACKING_EMAIL_REQUEST'));
 
   try {
-    const emailRequestUrl = 'http://localhost:3000/api/v1/tracking_emails';
-    const emailRequestBody = {
-      data: {
-        type: 'tracking_email',
-        attributes: {
-          base_url: 'http://example.com',
-        },
-      },
-    };
-    const jsonEmailRequestBody = JSON.stringify(emailRequestBody);
-    const emailResponse = await axios.post(emailRequestUrl, jsonEmailRequestBody);
-    const trackingEmailId = emailResponse.data.data.id;
-
-    const pixelRequestUrl = `http://localhost:3000/api/v1/tracking_emails/${trackingEmailId}/tracking_pixels`;
-    const pixelRequestBody = {
-      data: {
-        type: 'tracking_pixel',
-        attributes: {
-          webhook_url: 'http://example.com/webhook/url',
-        },
-      },
-    };
-    const jsonPixelRequestBody = JSON.stringify(pixelRequestBody);
-    const pixelResponse = await axios.post(pixelRequestUrl, jsonPixelRequestBody);
-    const pixelUrl = pixelResponse.data.data.attributes.url;
-    const pixelHtml = `<img src="${pixelUrl}">`;
-
     const htmlContent = document.createElement('div');
-    htmlContent.innerHTML = `${initEmail.body}${pixelHtml}`;
-
+    htmlContent.innerHTML = initEmail.body;
     const anchors = htmlContent.getElementsByTagName('a');
-    if (anchors.length > 0) {
-      const urlsRequestUrl = `http://localhost:3000/api/v1/tracking_emails/${trackingEmailId}/trackable_urls/bulk_create`;
-      const links = Array.from(anchors).map((anchor) => anchor.href);
-      const urlsRequestArray = links.map((link) => ({
-        type: 'trackable_url',
-        attributes: {
-          original_url: link,
-          webhook_url: 'http://example.com/webhook/url',
-        },
-      }));
-      const urlsRequestBody = { data: urlsRequestArray };
-      const urlsResponse = await axios.post(urlsRequestUrl, urlsRequestBody);
-      const trackableUrls = urlsResponse.data.data.map(
-        (urlData) => urlData.attributes.trackable_url,
-      );
-      Array.from(anchors).forEach((anchor, index) => {
-        anchor.href = trackableUrls[index];
-      });
-    }
+    const links = Array.from(anchors).map((anchor) => anchor.href);
+
+    const trackingData = await getTrackingData(links);
+    const pixelHtml = `<img src="${trackingData.pixelUrl}">`;
+    htmlContent.innerHTML = `${htmlContent.innerHTML}${pixelHtml}`;
+    Array.from(anchors).forEach((anchor, index) => {
+      // eslint-disable-next-line no-param-reassign
+      anchor.href = trackingData.trackableUrls[index];
+    });
 
     dispatch(submitEmail(initEmail));
     dispatch(createTrackingEmail({ ...initEmail, body: htmlContent.innerHTML }));
     dispatch(setSubmissionState('TRACKING_EMAIL_SUCCESS'));
   } catch (e) {
+    // eslint-disable-next-line no-alert
     alert(e);
     dispatch(setSubmissionState('TRACKING_EMAIL_FAILURE'));
   }
