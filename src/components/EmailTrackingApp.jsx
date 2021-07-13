@@ -3,11 +3,11 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { connect } from 'react-redux';
 import * as actions from '../actions/index.js';
-import EmailValidationMessage from './EmailValidationMessage.jsx';
-import BodyValidationMessage from './BodyValidationMessage.jsx';
-import TrackingEmailBody from './TrackingEmailBody.jsx';
-import EmailInput from './EmailInput.jsx';
-import SubjectInput from './SubjectInput.jsx';
+import EmailValidationMessage from './EmailInput/EmailValidationMessage.jsx';
+import BodyValidationMessage from './EmailBody/BodyValidationMessage.jsx';
+import TrackingEmailBody from './EmailBody/TrackingEmailBody.jsx';
+import EmailInput from './EmailInput/EmailInput.jsx';
+import SubjectInput from './EmailSubject/SubjectInput.jsx';
 import * as yup from 'yup';
 import cn from 'classnames';
 
